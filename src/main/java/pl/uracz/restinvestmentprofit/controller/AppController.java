@@ -4,7 +4,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import pl.uracz.restinvestmentprofit.dto.*;
 import pl.uracz.restinvestmentprofit.entity.Calculation;
@@ -46,10 +45,7 @@ public class AppController {
     }
 
     @PostMapping("/investments")
-    public ResponseEntity<SavedDepositDto> addDeposit(@Valid @RequestBody DepositAddDto deposit, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<SavedDepositDto> addDeposit(@Valid @RequestBody DepositAddDto deposit) {
         Deposit save = depositService.save(deposit);
         SavedDepositDto savedDepositDto = depositMapper.fromDeposit(save);
         HttpHeaders headers = new HttpHeaders();
