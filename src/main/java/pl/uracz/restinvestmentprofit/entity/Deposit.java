@@ -2,6 +2,7 @@ package pl.uracz.restinvestmentprofit.entity;
 
 import lombok.*;
 import pl.uracz.restinvestmentprofit.enums.CapitalizationPeriod;
+import pl.uracz.restinvestmentprofit.validation.DepositDates;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@DepositDates
 public class Deposit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
