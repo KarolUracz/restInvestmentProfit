@@ -5,6 +5,7 @@ import pl.uracz.restinvestmentprofit.entity.Calculation;
 import pl.uracz.restinvestmentprofit.entity.Deposit;
 import pl.uracz.restinvestmentprofit.enums.CalculationAlgorithm;
 import pl.uracz.restinvestmentprofit.enums.CapitalizationPeriod;
+import pl.uracz.restinvestmentprofit.exception.IncorrectDateException;
 import pl.uracz.restinvestmentprofit.repository.CalculationRepository;
 import pl.uracz.restinvestmentprofit.service.CalculationService;
 
@@ -71,7 +72,7 @@ class CalculationServiceImplTest {
     }
 
     @Test
-    void shouldSaveCalculation() {
+    void shouldSaveCalculation() throws IncorrectDateException {
         calculationRepository = mock(CalculationRepository.class);
         calculationService = new CalculationServiceImpl(calculationRepository);
         Deposit deposit1 = new Deposit();
@@ -101,7 +102,7 @@ class CalculationServiceImplTest {
     }
 
     @Test
-    void calculateDepositInterest() {
+    void calculateDepositInterest() throws IncorrectDateException {
         calculationService = new CalculationServiceImpl(calculationRepository);
         Deposit deposit1 = new Deposit();
         deposit1.setId(1);

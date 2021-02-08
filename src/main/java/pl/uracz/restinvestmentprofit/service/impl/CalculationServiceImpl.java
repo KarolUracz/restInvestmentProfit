@@ -5,10 +5,10 @@ import pl.uracz.restinvestmentprofit.entity.Calculation;
 import pl.uracz.restinvestmentprofit.entity.Deposit;
 import pl.uracz.restinvestmentprofit.enums.CalculationAlgorithm;
 import pl.uracz.restinvestmentprofit.enums.CapitalizationPeriod;
+import pl.uracz.restinvestmentprofit.exception.IncorrectDateException;
 import pl.uracz.restinvestmentprofit.repository.CalculationRepository;
 import pl.uracz.restinvestmentprofit.service.CalculationService;
 
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -32,7 +32,7 @@ public class CalculationServiceImpl implements CalculationService {
     }
 
     @Override
-    public Calculation saveCalculation(Deposit deposit, String depositAmount, String algorithm) {
+    public Calculation saveCalculation(Deposit deposit, String depositAmount, String algorithm) throws IncorrectDateException {
         Calculation calculation = new Calculation();
         calculation.setCalculationDate(LocalDate.now());
         calculation.setCalculationAlgorithm(valueOf(algorithm));
@@ -47,7 +47,7 @@ public class CalculationServiceImpl implements CalculationService {
     }
 
     @Override
-    public BigDecimal calculateDepositInterest(BigDecimal depositAmount, Deposit deposit, CalculationAlgorithm algorithm) {
+    public BigDecimal calculateDepositInterest(BigDecimal depositAmount, Deposit deposit, CalculationAlgorithm algorithm) throws IncorrectDateException {
         CapitalizationPeriod capitalizationPeriod = deposit.getCapitalizationPeriod();
         long numberOfMonths = 0;
         switch (algorithm) {
@@ -55,6 +55,9 @@ public class CalculationServiceImpl implements CalculationService {
                 numberOfMonths = ChronoUnit.MONTHS.between(deposit.getDepositStartDate(), deposit.getDepositEndDate());
                 break;
             case TILLNOW:
+                if (deposit.getDepositStartDate().isAfter(LocalDate.now())) {
+                    throw new IncorrectDateException("Can't make partial calculation for future deposit");
+                }
                 numberOfMonths = ChronoUnit.MONTHS.between(deposit.getDepositStartDate(), LocalDate.now());
                 break;
         }

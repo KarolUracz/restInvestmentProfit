@@ -15,6 +15,9 @@ public class DepositDatesValidator implements ConstraintValidator<DepositDates, 
 
     @Override
     public boolean isValid(Deposit deposit, ConstraintValidatorContext constraintValidatorContext) {
+        if (deposit.getDepositStartDate().isAfter(deposit.getDepositEndDate())) {
+            return false;
+        }
         CapitalizationPeriod capitalizationPeriod = deposit.getCapitalizationPeriod();
         int monthsToCapitalization = 0;
         switch (capitalizationPeriod) {

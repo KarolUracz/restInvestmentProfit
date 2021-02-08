@@ -1,8 +1,8 @@
 package pl.uracz.restinvestmentprofit.aop;
 
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -34,21 +34,19 @@ public class LoggingAspect {
     private void anyPublicMethod() {
     }
 
-    @Around("anyPublicMethod()")
-    public void afterControllerMethod(ProceedingJoinPoint joinPoint) {
+    @After("anyPublicMethod()")
+    public void afterControllerMethod(JoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         RequestMapping[] reqMappingAnnotations;
 
-        Annotation[] annos = method.getDeclaredAnnotations();
+        Annotation[] annotations = method.getDeclaredAnnotations();
         String methodName = null;
-        for (Annotation anno : annos) {
-            if (anno.annotationType()
-                    .isAnnotationPresent(org.springframework.web.bind.annotation.RequestMapping.class)) {
-                reqMappingAnnotations = anno.annotationType()
-                        .getAnnotationsByType(org.springframework.web.bind.annotation.RequestMapping.class);
-                for (RequestMapping annotation : reqMappingAnnotations) {
-                    for (RequestMethod reqMethod : annotation.method()) {
+        for (Annotation annotation : annotations) {
+            if (annotation.annotationType().isAnnotationPresent(RequestMapping.class)) {
+                reqMappingAnnotations = annotation.annotationType().getAnnotationsByType(RequestMapping.class);
+                for (RequestMapping requestMapping : reqMappingAnnotations) {
+                    for (RequestMethod reqMethod : requestMapping.method()) {
                         methodName = reqMethod.name();
                     }
                 }

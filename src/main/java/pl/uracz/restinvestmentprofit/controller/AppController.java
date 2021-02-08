@@ -3,8 +3,8 @@ package pl.uracz.restinvestmentprofit.controller;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import pl.uracz.restinvestmentprofit.dto.*;
 import pl.uracz.restinvestmentprofit.entity.Calculation;
 import pl.uracz.restinvestmentprofit.entity.Deposit;
@@ -15,7 +15,6 @@ import pl.uracz.restinvestmentprofit.service.CalculationService;
 import pl.uracz.restinvestmentprofit.service.DepositService;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -37,6 +36,9 @@ public class AppController {
     @GetMapping("/investments")
     public ResponseEntity<List<DepositDto>> getDeposits() {
         List<DepositDto> depositsDtos = depositService.allDtos();
+        if (depositsDtos.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         HttpHeaders headers = new HttpHeaders();
         headers.set("HttpStatus", "200");
         return ResponseEntity.ok()
@@ -58,10 +60,12 @@ public class AppController {
     @PostMapping("/investments/{id}/calculations")
     public ResponseEntity<CalculationDto> calculationForDeposit(@PathVariable long id, @RequestParam String depositAmount, @RequestParam String algorithm) throws IncorrectDateException {
         Deposit deposit = depositService.findById(id);
-        if (algorithm.equals("TILLNOW") && LocalDate.now().isBefore(deposit.getDepositStartDate())) {
-            throw new IncorrectDateException("Cannot make calculation for future deposit");
+        Calculation calculation;
+        try {
+            calculation = calculationService.saveCalculation(deposit, depositAmount, algorithm);
+        } catch (IncorrectDateException exception) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage(), exception);
         }
-        Calculation calculation = calculationService.saveCalculation(deposit, depositAmount, algorithm);
         HttpHeaders headers = new HttpHeaders();
         headers.set("HttpStatus", "204");
         CalculationDto calculationDto = calculationMapper.toDto(calculation, deposit);
