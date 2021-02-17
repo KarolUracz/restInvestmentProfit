@@ -16,4 +16,9 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     public void constraintViolationException(HttpServletResponse response) throws IOException {
         response.sendError(HttpStatus.BAD_REQUEST.value());
     }
+
+    @ExceptionHandler(IncorrectDateException.class)
+    public void incorrectDataException(HttpServletResponse response) throws IOException {
+        response.sendError(HttpStatus.BAD_REQUEST.value());
+    }
 }

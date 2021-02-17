@@ -61,17 +61,13 @@ public class AppController {
     public ResponseEntity<CalculationDto> calculationForDeposit(@PathVariable long id, @RequestParam String depositAmount, @RequestParam String algorithm) throws IncorrectDateException {
         Deposit deposit = depositService.findById(id);
         Calculation calculation;
-        try {
-            calculation = calculationService.saveCalculation(deposit, depositAmount, algorithm);
-        } catch (IncorrectDateException exception) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage(), exception);
-        }
+        calculation = calculationService.saveCalculation(deposit, depositAmount, algorithm);
         HttpHeaders headers = new HttpHeaders();
         headers.set("HttpStatus", "204");
         CalculationDto calculationDto = calculationMapper.toDto(calculation, deposit);
         return ResponseEntity.ok()
-        .headers(headers)
-        .body(calculationDto);
+                .headers(headers)
+                .body(calculationDto);
     }
 
     @GetMapping("/investments/{id}/calculations")
