@@ -67,7 +67,7 @@ class AppControllerTest {
         DepositAddDto depositAddDto = new DepositAddDto();
         depositAddDto.setName("test");
         depositAddDto.setInterest(0.05d);
-        depositAddDto.setCapitalizationPeriod(CapitalizationPeriod.ROK);
+        depositAddDto.setCapitalizationPeriod(CapitalizationPeriod.YEARLY);
         depositAddDto.setDepositStartDate(LocalDate.now().toString());
         depositAddDto.setDepositEndDate(LocalDate.now().plusYears(1).toString());
 
@@ -99,7 +99,7 @@ class AppControllerTest {
 
     @Test
     void getAllCalculationsForDeposit() throws Exception {
-        Deposit deposit = new Deposit(1, "test", 0.05d, CapitalizationPeriod.ROK, LocalDate.parse("2019-01-01"), LocalDate.parse("2021-01-01"));
+        Deposit deposit = new Deposit(1, "test", 0.05d, CapitalizationPeriod.YEARLY, LocalDate.parse("2019-01-01"), LocalDate.parse("2021-01-01"));
         Calculation calculation1 = new Calculation(1, BigDecimal.valueOf(1000), LocalDate.parse("2020-10-01"), deposit, CalculationAlgorithm.FULLPERIOD, BigDecimal.valueOf(300));
         Calculation calculation2 = new Calculation(2, BigDecimal.valueOf(2000), LocalDate.parse("2020-12-01"), deposit, CalculationAlgorithm.FULLPERIOD, BigDecimal.valueOf(300));
         List<Calculation> calculations = Arrays.asList(calculation1, calculation2);

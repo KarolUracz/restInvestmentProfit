@@ -64,19 +64,19 @@ public class CalculationServiceImpl implements CalculationService {
         int capitalizationPeriodInteger = 1;
         int numberOfCapitalization = 0;
         switch (capitalizationPeriod) {
-            case MIESIAC:
+            case MONTHLY:
                 capitalizationPeriodInteger = 12;
                 numberOfCapitalization = (int) numberOfMonths;
                 break;
-            case TRZYMIESIACE:
+            case QUARTERLY:
                 capitalizationPeriodInteger = 4;
                 numberOfCapitalization = (int) (numberOfMonths/3);
                 break;
-            case SZESCMIESIECY:
+            case HALFYEARLY:
                 capitalizationPeriodInteger = 2;
                 numberOfCapitalization = (int) (numberOfMonths/6);
                 break;
-            case ROK:
+            case YEARLY:
                 capitalizationPeriodInteger = 1;
                 numberOfCapitalization = (int) (numberOfMonths/12);
         }

@@ -35,7 +35,7 @@ class DepositServiceImplTest {
         deposit1.setId(1);
         deposit1.setName("test1");
         deposit1.setInterest(0.03);
-        deposit1.setCapitalizationPeriod(CapitalizationPeriod.ROK);
+        deposit1.setCapitalizationPeriod(CapitalizationPeriod.YEARLY);
         deposit1.setDepositStartDate(LocalDate.now());
         deposit1.setDepositEndDate(LocalDate.now().plusYears(2));
         deposits.add(deposit1);
@@ -43,7 +43,7 @@ class DepositServiceImplTest {
         deposit2.setId(2);
         deposit2.setName("test2");
         deposit2.setInterest(0.03);
-        deposit2.setCapitalizationPeriod(CapitalizationPeriod.ROK);
+        deposit2.setCapitalizationPeriod(CapitalizationPeriod.YEARLY);
         deposit2.setDepositStartDate(LocalDate.now());
         deposit2.setDepositEndDate(LocalDate.now().plusYears(2));
         deposits.add(deposit2);
@@ -63,7 +63,7 @@ class DepositServiceImplTest {
         DepositAddDto depositAddDto = new DepositAddDto();
         depositAddDto.setName("test");
         depositAddDto.setInterest(0.05);
-        depositAddDto.setCapitalizationPeriod(CapitalizationPeriod.ROK);
+        depositAddDto.setCapitalizationPeriod(CapitalizationPeriod.YEARLY);
         depositAddDto.setDepositStartDate(LocalDate.now().toString());
         depositAddDto.setDepositEndDate(LocalDate.now().plusYears(2).toString());
 
@@ -71,7 +71,7 @@ class DepositServiceImplTest {
         deposit.setId(1);
         deposit.setName("test");
         deposit.setInterest(0.05);
-        deposit.setCapitalizationPeriod(CapitalizationPeriod.ROK);
+        deposit.setCapitalizationPeriod(CapitalizationPeriod.YEARLY);
         deposit.setDepositStartDate(LocalDate.now());
         deposit.setDepositEndDate(LocalDate.now().plusYears(2));;
 
@@ -91,7 +91,7 @@ class DepositServiceImplTest {
         deposit.setId(1);
         deposit.setName("test");
         deposit.setInterest(0.05);
-        deposit.setCapitalizationPeriod(CapitalizationPeriod.ROK);
+        deposit.setCapitalizationPeriod(CapitalizationPeriod.YEARLY);
         deposit.setDepositStartDate(LocalDate.now());
         deposit.setDepositEndDate(LocalDate.now().plusYears(2));
 

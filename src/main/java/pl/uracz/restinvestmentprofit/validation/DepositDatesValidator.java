@@ -21,16 +21,16 @@ public class DepositDatesValidator implements ConstraintValidator<DepositDates, 
         CapitalizationPeriod capitalizationPeriod = deposit.getCapitalizationPeriod();
         int monthsToCapitalization = 0;
         switch (capitalizationPeriod) {
-            case ROK:
+            case YEARLY:
                 monthsToCapitalization = 12;
                 break;
-            case SZESCMIESIECY:
+            case HALFYEARLY:
                 monthsToCapitalization = 6;
                 break;
-            case TRZYMIESIACE:
+            case QUARTERLY:
                 monthsToCapitalization = 3;
                 break;
-            case MIESIAC:
+            case MONTHLY:
                 monthsToCapitalization = 1;
         }
         long between = ChronoUnit.MONTHS.between(deposit.getDepositStartDate(), deposit.getDepositEndDate());

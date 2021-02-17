@@ -36,7 +36,7 @@ class CalculationServiceImplTest {
         deposit1.setId(1);
         deposit1.setName("test1");
         deposit1.setInterest(0.03);
-        deposit1.setCapitalizationPeriod(CapitalizationPeriod.ROK);
+        deposit1.setCapitalizationPeriod(CapitalizationPeriod.YEARLY);
         deposit1.setDepositStartDate(LocalDate.now());
         deposit1.setDepositEndDate(LocalDate.now().plusYears(2));
         calculation1.setDeposit(deposit1);
@@ -51,7 +51,7 @@ class CalculationServiceImplTest {
         deposit2.setId(2);
         deposit2.setName("test2");
         deposit2.setInterest(0.03);
-        deposit2.setCapitalizationPeriod(CapitalizationPeriod.ROK);
+        deposit2.setCapitalizationPeriod(CapitalizationPeriod.YEARLY);
         deposit2.setDepositStartDate(LocalDate.now());
         deposit2.setDepositEndDate(LocalDate.now().plusYears(2));
         calculation2.setDeposit(deposit2);
@@ -79,7 +79,7 @@ class CalculationServiceImplTest {
         deposit1.setId(1);
         deposit1.setName("test1");
         deposit1.setInterest(0.03);
-        deposit1.setCapitalizationPeriod(CapitalizationPeriod.ROK);
+        deposit1.setCapitalizationPeriod(CapitalizationPeriod.YEARLY);
         deposit1.setDepositStartDate(LocalDate.parse("2019-01-01"));
         deposit1.setDepositEndDate(LocalDate.parse("2019-01-01").plusYears(2));
 
@@ -108,7 +108,7 @@ class CalculationServiceImplTest {
         deposit1.setId(1);
         deposit1.setName("test1");
         deposit1.setInterest(0.03);
-        deposit1.setCapitalizationPeriod(CapitalizationPeriod.ROK);
+        deposit1.setCapitalizationPeriod(CapitalizationPeriod.YEARLY);
         deposit1.setDepositStartDate(LocalDate.parse("2019-01-01"));
         deposit1.setDepositEndDate(LocalDate.parse("2019-01-01").plusYears(2));
 
