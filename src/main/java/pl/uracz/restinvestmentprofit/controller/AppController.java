@@ -40,7 +40,7 @@ public class AppController {
         HttpHeaders headers = new HttpHeaders();
         headers.set("HttpStatus", "200");
         return ResponseEntity.ok()
-                .headers(headers)
+//                .headers(headers)
                 .body(depositsDtos);
     }
 
@@ -51,7 +51,7 @@ public class AppController {
         HttpHeaders headers = new HttpHeaders();
         headers.set("HttpStatus", "204");
         return ResponseEntity.ok()
-                .headers(headers)
+//                .headers(headers)
                 .body(savedDepositDto);
     }
 
