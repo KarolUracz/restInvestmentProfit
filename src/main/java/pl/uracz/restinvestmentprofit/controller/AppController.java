@@ -58,7 +58,7 @@ public class AppController {
     }
 
     @PostMapping("/investments/{id}/calculations")
-    public ResponseEntity<CalculationDto> calculationForDeposit(@PathVariable long id, @RequestParam String depositAmount, @RequestParam String algorithm) throws IncorrectDateException {
+    public ResponseEntity<CalculationDto> calculationForDeposit(@PathVariable long id, @RequestParam String depositAmount, @RequestParam String algorithm) {
         Deposit deposit = depositService.findById(id);
         Calculation calculation;
         calculation = calculationService.saveCalculation(deposit, depositAmount, algorithm);

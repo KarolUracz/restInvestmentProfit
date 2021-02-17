@@ -32,7 +32,7 @@ public class CalculationServiceImpl implements CalculationService {
     }
 
     @Override
-    public Calculation saveCalculation(Deposit deposit, String depositAmount, String algorithm) throws IncorrectDateException {
+    public Calculation saveCalculation(Deposit deposit, String depositAmount, String algorithm) {
         Calculation calculation = new Calculation();
         calculation.setCalculationDate(LocalDate.now());
         calculation.setCalculationAlgorithm(valueOf(algorithm));
@@ -47,7 +47,7 @@ public class CalculationServiceImpl implements CalculationService {
     }
 
     @Override
-    public BigDecimal calculateDepositInterest(BigDecimal depositAmount, Deposit deposit, CalculationAlgorithm algorithm) throws IncorrectDateException {
+    public BigDecimal calculateDepositInterest(BigDecimal depositAmount, Deposit deposit, CalculationAlgorithm algorithm) {
         CapitalizationPeriod capitalizationPeriod = deposit.getCapitalizationPeriod();
         long numberOfMonths = 0;
         switch (algorithm) {
