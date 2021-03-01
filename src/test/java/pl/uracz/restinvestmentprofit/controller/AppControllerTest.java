@@ -1,6 +1,7 @@
 package pl.uracz.restinvestmentprofit.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.checkerframework.checker.units.qual.C;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -80,10 +81,6 @@ class AppControllerTest {
         List<DepositDto> dtoList = Arrays.asList(depositDto1, depositDto2);
 
         given(depositService.allDtos()).willReturn(dtoList);
-//        when(depositService.allDtos()).thenReturn(dtoList);
-//        when(appController.getDeposits()).thenReturn(ResponseEntity.ok().body(dtoList));
-//        ResponseEntity<List<DepositDto>> deposits = appController.getDeposits();
-//        Assert.assertEquals(HttpStatus.OK, deposits.getStatusCode());
 
         MockHttpServletResponse response = mockMvc.perform(get("/api/investments")
                 .accept(MediaType.APPLICATION_JSON))
@@ -130,18 +127,18 @@ class AppControllerTest {
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
 
-        String httpStatus = result.getResponse().getHeader("HttpStatus");
-        Assert.assertEquals("204", httpStatus);
         assertThat(result.getResponse().getContentAsString().contains("test"));
 
     }
 
     @Test
     void calculationForDeposit() throws Exception {
+        CalculationInputDataDto calculationInputDataDto = new CalculationInputDataDto();
+        calculationInputDataDto.setDepositAmount("1000");
+        calculationInputDataDto.setAlgorithm("FULLPERIOD");
         mockMvc.perform(post("/api/investments/{id}/calculations", 1)
-                .param("depositAmount", "1000")
-                .param("algorithm", "FULLPERIOD")
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(calculationInputDataDto)))
                 .andExpect(status().is2xxSuccessful());
     }
 
@@ -169,8 +166,5 @@ class AppControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
-
-        String httpStatus = result.getResponse().getHeader("HttpStatus");
-        Assert.assertEquals("200", httpStatus);
     }
 }

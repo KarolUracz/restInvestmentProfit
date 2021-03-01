@@ -1,6 +1,5 @@
 package pl.uracz.restinvestmentprofit.controller;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,14 +33,8 @@ public class AppController {
     @GetMapping("/investments")
     public ResponseEntity<List<DepositDto>> getDeposits() {
         List<DepositDto> depositsDtos = depositService.allDtos();
-//        if (depositsDtos.isEmpty()) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.set("HttpStatus", "200");
         return ResponseEntity
                 .status(HttpStatus.OK)
-//                .headers(headers)
                 .body(depositsDtos);
     }
 
@@ -49,23 +42,18 @@ public class AppController {
     public ResponseEntity<SavedDepositDto> addDeposit(@Valid @RequestBody DepositAddDto deposit) {
         Deposit save = depositService.save(deposit);
         SavedDepositDto savedDepositDto = depositMapper.fromDeposit(save);
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("HttpStatus", "204");
-        return ResponseEntity.ok()
-                .headers(headers)
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
                 .body(savedDepositDto);
     }
 
     @PostMapping("/investments/{id}/calculations")
-    public ResponseEntity<CalculationDto> calculationForDeposit(@PathVariable long id, @RequestParam String depositAmount, @RequestParam String algorithm) {
+    public ResponseEntity<CalculationDto> calculationForDeposit(@PathVariable long id, @RequestBody CalculationInputDataDto calculationInputDataDto){
         Deposit deposit = depositService.findById(id);
-        Calculation calculation;
-        calculation = calculationService.saveCalculation(deposit, depositAmount, algorithm);
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("HttpStatus", "204");
+        Calculation calculation = calculationService.saveCalculation(deposit, calculationInputDataDto.getDepositAmount(), calculationInputDataDto.getAlgorithm());
         CalculationDto calculationDto = calculationMapper.toDto(calculation, deposit);
-        return ResponseEntity.ok()
-                .headers(headers)
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
                 .body(calculationDto);
     }
 
@@ -75,10 +63,7 @@ public class AppController {
         Deposit deposit = depositService.findById(id);
         DepositCalculationsDto depositCalculationsDto = depositMapper.getCalculationsForDeposit(deposit);
         depositCalculationsDto.setCalculationDataDtos(calculationMapper.toCalculationsList(allByDepositId));
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("HttpStatus", "200");
         return ResponseEntity.ok()
-                .headers(headers)
                 .body(depositCalculationsDto);
     }
 }
