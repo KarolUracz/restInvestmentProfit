@@ -2,24 +2,33 @@ package pl.uracz.restinvestmentprofit.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import pl.uracz.restinvestmentprofit.dto.CalculationDataDto;
-import pl.uracz.restinvestmentprofit.dto.DepositAddDto;
-import pl.uracz.restinvestmentprofit.dto.DepositCalculationsDto;
-import pl.uracz.restinvestmentprofit.dto.SavedDepositDto;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import pl.uracz.restinvestmentprofit.dto.*;
 import pl.uracz.restinvestmentprofit.entity.Calculation;
 import pl.uracz.restinvestmentprofit.entity.Deposit;
 import pl.uracz.restinvestmentprofit.enums.CalculationAlgorithm;
 import pl.uracz.restinvestmentprofit.enums.CapitalizationPeriod;
+import pl.uracz.restinvestmentprofit.exception.CustomGlobalExceptionHandler;
 import pl.uracz.restinvestmentprofit.mapper.CalculationMapper;
 import pl.uracz.restinvestmentprofit.mapper.DepositMapper;
 import pl.uracz.restinvestmentprofit.service.CalculationService;
@@ -27,9 +36,15 @@ import pl.uracz.restinvestmentprofit.service.DepositService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -56,10 +71,31 @@ class AppControllerTest {
 
     @Test
     void shouldReturnGetDepositsResponseCode() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/investments")
+        DepositDto depositDto1 = new DepositDto();
+        depositDto1.setId(1L);
+        depositDto1.setName("test1");
+        DepositDto depositDto2 = new DepositDto();
+        depositDto2.setId(2L);
+        depositDto2.setName("test2");
+        List<DepositDto> dtoList = Arrays.asList(depositDto1, depositDto2);
+
+        given(depositService.allDtos()).willReturn(dtoList);
+//        when(depositService.allDtos()).thenReturn(dtoList);
+//        when(appController.getDeposits()).thenReturn(ResponseEntity.ok().body(dtoList));
+//        ResponseEntity<List<DepositDto>> deposits = appController.getDeposits();
+//        Assert.assertEquals(HttpStatus.OK, deposits.getStatusCode());
+
+        MockHttpServletResponse response = mockMvc.perform(get("/api/investments")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        String contentAsString = response.getContentAsString();
+        assertThat(contentAsString.contains(depositDto1.getName()));
+
+
     }
 
     @Test
@@ -71,11 +107,22 @@ class AppControllerTest {
         depositAddDto.setDepositStartDate(LocalDate.now().toString());
         depositAddDto.setDepositEndDate(LocalDate.now().plusYears(1).toString());
 
+        Deposit deposit = new Deposit();
+        deposit.setId(1L);
+        deposit.setName(depositAddDto.getName());
+        deposit.setInterest(depositAddDto.getInterest());
+        deposit.setCapitalizationPeriod(depositAddDto.getCapitalizationPeriod());
+        deposit.setDepositStartDate(LocalDate.parse(depositAddDto.getDepositStartDate()));
+        deposit.setDepositEndDate(LocalDate.parse(depositAddDto.getDepositEndDate()));
+
         SavedDepositDto savedDepositDto = new SavedDepositDto();
         savedDepositDto.setId(1);
         savedDepositDto.setDepositName(depositAddDto.getName());
         savedDepositDto.setDepositInterest(depositAddDto.getInterest());
         savedDepositDto.setDepositDurationInDays(360);
+
+        given(depositService.save(depositAddDto)).willReturn(deposit);
+        given(depositMapper.fromDeposit(any(Deposit.class))).willReturn(savedDepositDto);
 
         MvcResult result = mockMvc.perform(post("/api/investments")
                 .content(mapper.writeValueAsString(depositAddDto))
@@ -85,6 +132,7 @@ class AppControllerTest {
 
         String httpStatus = result.getResponse().getHeader("HttpStatus");
         Assert.assertEquals("204", httpStatus);
+        assertThat(result.getResponse().getContentAsString().contains("test"));
 
     }
 

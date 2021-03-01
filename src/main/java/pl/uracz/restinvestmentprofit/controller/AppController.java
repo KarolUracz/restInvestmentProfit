@@ -34,12 +34,13 @@ public class AppController {
     @GetMapping("/investments")
     public ResponseEntity<List<DepositDto>> getDeposits() {
         List<DepositDto> depositsDtos = depositService.allDtos();
-        if (depositsDtos.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("HttpStatus", "200");
-        return ResponseEntity.ok()
+//        if (depositsDtos.isEmpty()) {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.set("HttpStatus", "200");
+        return ResponseEntity
+                .status(HttpStatus.OK)
 //                .headers(headers)
                 .body(depositsDtos);
     }
@@ -51,7 +52,7 @@ public class AppController {
         HttpHeaders headers = new HttpHeaders();
         headers.set("HttpStatus", "204");
         return ResponseEntity.ok()
-//                .headers(headers)
+                .headers(headers)
                 .body(savedDepositDto);
     }
 
