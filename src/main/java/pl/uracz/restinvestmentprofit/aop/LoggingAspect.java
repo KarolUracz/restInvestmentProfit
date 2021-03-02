@@ -2,12 +2,11 @@ package pl.uracz.restinvestmentprofit.aop;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,19 +26,23 @@ public class LoggingAspect {
     @Autowired(required = false)
     private HttpServletRequest httpServletRequest;
 
-    @Autowired(required = false)
-    private HttpServletResponse httpServletResponse;
-
     @Pointcut("execution(* pl.uracz.restinvestmentprofit.controller..*(..))")
     private void anyPublicMethod() {
     }
 
-    @After("anyPublicMethod()")
-    public void afterControllerMethod(JoinPoint joinPoint) {
+    @AfterReturning(value = "anyPublicMethod()", returning = "resultValue")
+    public void afterControllerMethod(JoinPoint joinPoint, Object resultValue) {
+        String methodName = getString(joinPoint);
+        ResponseEntity resultValue1 = (ResponseEntity) resultValue;
+        log.info("Http call method: " + methodName + ", url: " + httpServletRequest.getRequestURI() + ", status code: " + resultValue1.getStatusCode().value());
+    }
+
+    @AfterThrowing(value = "anyPublicMethod()")
+
+    private String getString(JoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         RequestMapping[] reqMappingAnnotations;
-
         Annotation[] annotations = method.getDeclaredAnnotations();
         String methodName = null;
         for (Annotation annotation : annotations) {
@@ -52,6 +55,6 @@ public class LoggingAspect {
                 }
             }
         }
-        log.info("Http call method: " + methodName + ", url: " + httpServletRequest.getRequestURI() + ", status code: " + httpServletResponse.getStatus());
+        return methodName;
     }
 }
