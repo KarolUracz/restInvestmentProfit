@@ -21,7 +21,7 @@ public class DepositDatesValidator implements ConstraintValidator<DepositDates, 
         if (startDate.isAfter(endDate)) {
             return false;
         }
-        CapitalizationPeriod capitalizationPeriod = deposit.getCapitalizationPeriod();
+        CapitalizationPeriod capitalizationPeriod = CapitalizationPeriod.valueOf(deposit.getCapitalizationPeriod());
         int monthsToCapitalization;
         switch (capitalizationPeriod) {
             case YEARLY:

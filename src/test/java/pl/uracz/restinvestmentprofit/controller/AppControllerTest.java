@@ -2,6 +2,7 @@ package pl.uracz.restinvestmentprofit.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.checkerframework.checker.units.qual.C;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import pl.uracz.restinvestmentprofit.dto.*;
@@ -44,6 +46,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
@@ -100,7 +103,7 @@ class AppControllerTest {
         DepositAddDto depositAddDto = new DepositAddDto();
         depositAddDto.setName("test");
         depositAddDto.setInterest(0.05d);
-        depositAddDto.setCapitalizationPeriod(CapitalizationPeriod.YEARLY);
+        depositAddDto.setCapitalizationPeriod("YEARLY");
         depositAddDto.setDepositStartDate(LocalDate.now().toString());
         depositAddDto.setDepositEndDate(LocalDate.now().plusYears(1).toString());
 
@@ -108,7 +111,7 @@ class AppControllerTest {
         deposit.setId(1L);
         deposit.setName(depositAddDto.getName());
         deposit.setInterest(depositAddDto.getInterest());
-        deposit.setCapitalizationPeriod(depositAddDto.getCapitalizationPeriod());
+        deposit.setCapitalizationPeriod(CapitalizationPeriod.valueOf(depositAddDto.getCapitalizationPeriod()));
         deposit.setDepositStartDate(LocalDate.parse(depositAddDto.getDepositStartDate()));
         deposit.setDepositEndDate(LocalDate.parse(depositAddDto.getDepositEndDate()));
 
@@ -124,7 +127,8 @@ class AppControllerTest {
         MvcResult result = mockMvc.perform(post("/api/investments")
                 .content(mapper.writeValueAsString(depositAddDto))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is2xxSuccessful())
+                .andExpect(status().isNoContent())
+//                .andExpect(jsonPath("$.depositName").value(savedDepositDto.getDepositName()))
                 .andReturn();
 
         assertThat(result.getResponse().getContentAsString().contains("test"));

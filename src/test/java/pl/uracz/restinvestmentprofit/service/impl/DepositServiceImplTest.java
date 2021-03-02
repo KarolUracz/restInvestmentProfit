@@ -63,7 +63,7 @@ class DepositServiceImplTest {
         DepositAddDto depositAddDto = new DepositAddDto();
         depositAddDto.setName("test");
         depositAddDto.setInterest(0.05);
-        depositAddDto.setCapitalizationPeriod(CapitalizationPeriod.YEARLY);
+        depositAddDto.setCapitalizationPeriod("YEARLY");
         depositAddDto.setDepositStartDate(LocalDate.now().toString());
         depositAddDto.setDepositEndDate(LocalDate.now().plusYears(2).toString());
 
