@@ -31,39 +31,35 @@ public class AppController {
     }
 
     @GetMapping("/investments")
-    public ResponseEntity<List<DepositDto>> getDeposits() {
-        List<DepositDto> depositsDtos = depositService.allDtos();
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(depositsDtos);
+    @ResponseStatus(HttpStatus.OK)
+    public List<DepositDto> getDeposits() {
+        return depositService.allDtos();
     }
 
     @PostMapping("/investments")
-    public ResponseEntity<SavedDepositDto> addDeposit(@Valid @RequestBody DepositAddDto deposit) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public SavedDepositDto addDeposit(@Valid @RequestBody DepositAddDto deposit) {
         Deposit save = depositService.save(deposit);
         SavedDepositDto savedDepositDto = depositMapper.fromDeposit(save);
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .body(savedDepositDto);
+        return savedDepositDto;
     }
 
     @PostMapping("/investments/{id}/calculations")
-    public ResponseEntity<CalculationDto> calculationForDeposit(@PathVariable long id, @RequestBody CalculationInputDataDto calculationInputDataDto){
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public CalculationDto calculationForDeposit(@PathVariable long id, @RequestBody CalculationInputDataDto calculationInputDataDto){
         Deposit deposit = depositService.findById(id);
         Calculation calculation = calculationService.saveCalculation(deposit, calculationInputDataDto.getDepositAmount(), calculationInputDataDto.getAlgorithm());
         CalculationDto calculationDto = calculationMapper.toDto(calculation, deposit);
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .body(calculationDto);
+        return calculationDto;
     }
 
     @GetMapping("/investments/{id}/calculations")
-    public ResponseEntity<DepositCalculationsDto> getAllCalculationsForDeposit(@PathVariable long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public DepositCalculationsDto getAllCalculationsForDeposit(@PathVariable long id) {
         List<Calculation> allByDepositId = calculationService.findAllByDepositId(id);
         Deposit deposit = depositService.findById(id);
         DepositCalculationsDto depositCalculationsDto = depositMapper.getCalculationsForDeposit(deposit);
         depositCalculationsDto.setCalculationDataDtos(calculationMapper.toCalculationsList(allByDepositId));
-        return ResponseEntity.ok()
-                .body(depositCalculationsDto);
+        return depositCalculationsDto;
     }
 }

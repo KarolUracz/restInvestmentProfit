@@ -7,6 +7,8 @@ import pl.uracz.restinvestmentprofit.validation.DateValidation;
 import pl.uracz.restinvestmentprofit.validation.DepositDates;
 
 import javax.validation.GroupSequence;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -14,14 +16,15 @@ import javax.validation.constraints.NotNull;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@GroupSequence({})
+@GroupSequence({CapitalizationPeriod.class, DateValidation.class, DepositDates.class, DepositAddDto.class})
 @DepositDates(groups = DepositDates.class)
 public class DepositAddDto {
-    @NotBlank
+    @NotBlank(message = "Name cannot be blank")
     private String name;
-    @NotNull
+    @Min(0)
+    @Max(100)
     private double interest;
-    @CapitalizationPeriodValidation(enumClass = CapitalizationPeriod.class)
+    @CapitalizationPeriodValidation(enumClass = CapitalizationPeriod.class, groups = CapitalizationPeriod.class)
     private String capitalizationPeriod;
     @DateValidation(groups = DateValidation.class)
     private String depositStartDate;
