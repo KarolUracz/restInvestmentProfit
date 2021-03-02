@@ -33,11 +33,9 @@ public class LoggingAspect {
     @AfterReturning(value = "anyPublicMethod()", returning = "resultValue")
     public void afterControllerMethod(JoinPoint joinPoint, Object resultValue) {
         String methodName = getString(joinPoint);
-        ResponseEntity resultValue1 = (ResponseEntity) resultValue;
-        log.info("Http call method: " + methodName + ", url: " + httpServletRequest.getRequestURI() + ", status code: " + resultValue1.getStatusCode().value());
+        ResponseEntity<?> result = (ResponseEntity<?>) resultValue;
+        log.info("Http call method: " + methodName + ", url: " + httpServletRequest.getRequestURI() + ", status code: " + result.getStatusCode().value());
     }
-
-    @AfterThrowing(value = "anyPublicMethod()")
 
     private String getString(JoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
