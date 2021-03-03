@@ -6,6 +6,7 @@ import pl.uracz.restinvestmentprofit.validation.CapitalizationPeriodValidation;
 import pl.uracz.restinvestmentprofit.validation.DateValidation;
 import pl.uracz.restinvestmentprofit.validation.DepositDates;
 
+import javax.persistence.Column;
 import javax.validation.GroupSequence;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
