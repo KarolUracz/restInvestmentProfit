@@ -2,20 +2,19 @@ package pl.uracz.restinvestmentprofit.aop;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-
 
 @Aspect
 @Component
@@ -36,7 +35,6 @@ public class LoggingAspect {
 
     @After(value = "anyPublicMethod()")
     public void afterControllerMethod(JoinPoint joinPoint) {
-//        String methodName = getRequestMethodName(joinPoint);
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         ResponseStatus status = method.getAnnotation(ResponseStatus.class);
@@ -48,23 +46,4 @@ public class LoggingAspect {
         ResponseEntity<?> responseEntity = (ResponseEntity<?>) returnValue;
         log.error("Http call method: " + httpServletRequest.getMethod() + ", url: " + httpServletRequest.getRequestURI() + ", status code: " + responseEntity.getStatusCode());
     }
-//
-//    private String getRequestMethodName(JoinPoint joinPoint) {
-//        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-//        Method method = signature.getMethod();
-//        RequestMapping[] reqMappingAnnotations;
-//        Annotation[] annotations = method.getDeclaredAnnotations();
-//        String methodName = null;
-//        for (Annotation annotation : annotations) {
-//            if (annotation.annotationType().isAnnotationPresent(RequestMapping.class)) {
-//                reqMappingAnnotations = annotation.annotationType().getAnnotationsByType(RequestMapping.class);
-//                for (RequestMapping requestMapping : reqMappingAnnotations) {
-//                    for (RequestMethod reqMethod : requestMapping.method()) {
-//                        methodName = reqMethod.name();
-//                    }
-//                }
-//            }
-//        }
-//        return methodName;
-//    }
 }

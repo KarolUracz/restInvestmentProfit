@@ -1,17 +1,18 @@
 package pl.uracz.restinvestmentprofit.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.uracz.restinvestmentprofit.enums.CapitalizationPeriod;
 import pl.uracz.restinvestmentprofit.validation.CapitalizationPeriodValidation;
 import pl.uracz.restinvestmentprofit.validation.DateValidation;
 import pl.uracz.restinvestmentprofit.validation.DepositDates;
 
-import javax.persistence.Column;
 import javax.validation.GroupSequence;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
