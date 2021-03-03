@@ -36,38 +36,35 @@ public class LoggingAspect {
 
     @After(value = "anyPublicMethod()")
     public void afterControllerMethod(JoinPoint joinPoint) {
-        String methodName = getRequestMethodName(joinPoint);
+//        String methodName = getRequestMethodName(joinPoint);
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         ResponseStatus status = method.getAnnotation(ResponseStatus.class);
-        log.info("Http call method: " + methodName + ", url: " + httpServletRequest.getRequestURI() + ", status code: " + status.value());
+        log.info("Http call method: " + httpServletRequest.getMethod() + ", url: " + httpServletRequest.getRequestURI() + ", status code: " + status.value());
     }
 
     @AfterReturning(value = "anyCustomGlobalExceptionHandlerMethod()", returning = "returnValue")
-    public void afterCustomGlobalExceptionHandlerMethod(JoinPoint joinPoint, Object returnValue){
-//        String requestMethodName = getRequestMethodName(joinPoint);
-//        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-//        Method method = signature.getMethod();
+    public void afterCustomGlobalExceptionHandlerMethod(Object returnValue){
         ResponseEntity<?> responseEntity = (ResponseEntity<?>) returnValue;
         log.error("Http call method: " + httpServletRequest.getMethod() + ", url: " + httpServletRequest.getRequestURI() + ", status code: " + responseEntity.getStatusCode());
     }
-
-    private String getRequestMethodName(JoinPoint joinPoint) {
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        Method method = signature.getMethod();
-        RequestMapping[] reqMappingAnnotations;
-        Annotation[] annotations = method.getDeclaredAnnotations();
-        String methodName = null;
-        for (Annotation annotation : annotations) {
-            if (annotation.annotationType().isAnnotationPresent(RequestMapping.class)) {
-                reqMappingAnnotations = annotation.annotationType().getAnnotationsByType(RequestMapping.class);
-                for (RequestMapping requestMapping : reqMappingAnnotations) {
-                    for (RequestMethod reqMethod : requestMapping.method()) {
-                        methodName = reqMethod.name();
-                    }
-                }
-            }
-        }
-        return methodName;
-    }
+//
+//    private String getRequestMethodName(JoinPoint joinPoint) {
+//        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+//        Method method = signature.getMethod();
+//        RequestMapping[] reqMappingAnnotations;
+//        Annotation[] annotations = method.getDeclaredAnnotations();
+//        String methodName = null;
+//        for (Annotation annotation : annotations) {
+//            if (annotation.annotationType().isAnnotationPresent(RequestMapping.class)) {
+//                reqMappingAnnotations = annotation.annotationType().getAnnotationsByType(RequestMapping.class);
+//                for (RequestMapping requestMapping : reqMappingAnnotations) {
+//                    for (RequestMethod reqMethod : requestMapping.method()) {
+//                        methodName = reqMethod.name();
+//                    }
+//                }
+//            }
+//        }
+//        return methodName;
+//    }
 }

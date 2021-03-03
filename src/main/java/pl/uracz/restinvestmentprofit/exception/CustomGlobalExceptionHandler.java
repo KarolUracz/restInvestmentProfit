@@ -6,13 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import pl.uracz.restinvestmentprofit.errors.ApiError;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 import java.io.IOException;
@@ -22,9 +19,6 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-
-
-
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         List<String> validationList = ex.getBindingResult().getFieldErrors()
@@ -32,11 +26,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 .map(fieldError -> fieldError.getDefaultMessage())
                 .collect(Collectors.toList());
         request.getParameterNames().forEachRemaining(System.out::println);
-
-        HttpServletRequest servletRequest = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .getRequest();
-
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), validationList, servletRequest.getMethod());
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, validationList);
         return handleExceptionInternal(ex, apiError, headers, apiError.getStatus(), request);
     }
 

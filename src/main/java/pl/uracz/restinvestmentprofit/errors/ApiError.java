@@ -9,23 +9,17 @@ import java.util.List;
 @Getter
 public class ApiError {
     private HttpStatus status;
-    private String message;
     private List<String> errors;
-    private String requestMethod;
 
-    public ApiError(HttpStatus status, String message, List<String> errors, String method) {
+    public ApiError(HttpStatus status, List<String> errors) {
         super();
         this.status = status;
-        this.message = message;
         this.errors = errors;
-        this.requestMethod = method;
     }
 
-    public ApiError(HttpStatus status, String message, String error, String method) {
+    public ApiError(HttpStatus status, String error) {
         super();
         this.status = status;
-        this.message = message;
-        this.requestMethod = method;
         errors = Collections.singletonList(error);
     }
 }
